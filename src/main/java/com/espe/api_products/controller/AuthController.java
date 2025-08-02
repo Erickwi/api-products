@@ -8,13 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.view.RedirectView;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*")
 public class AuthController {
     
     @Autowired
@@ -45,10 +44,11 @@ public class AuthController {
         usuarioService.guardarOActualizar(usuario);
         // Generar token JWT
         String token = jwtService.generateToken(githubId, nombre, email);
-        Map<String, Object> response = new HashMap<>();
-        response.put("token", token);
-        response.put("usuario", usuario);
-        return ResponseEntity.ok(response);
+        // Redirigir al frontend con el token como parámetro
+        String frontendUrl = "http://127.0.0.1:3000/index.html?token=" + token;
+        RedirectView rv = new RedirectView(frontendUrl);
+        rv.setExposeModelAttributes(false);
+        return rv;
     }
     
     @GetMapping("/user")
