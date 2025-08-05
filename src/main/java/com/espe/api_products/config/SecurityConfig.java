@@ -34,10 +34,11 @@ public class SecurityConfig {
                 .requestMatchers("/api/productos/**").authenticated()
                 .anyRequest().authenticated()
             )
-            .oauth2Login(oauth2 -> oauth2
-                .defaultSuccessUrl("/auth/github/callback", true)
-                .failureUrl("/auth/github/callback?error=true")
-            )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/html/login") // Tu página HTML bonita
+                        .defaultSuccessUrl("/auth/github/callback", true)
+                        .failureUrl("/login?error=true")
+                )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
